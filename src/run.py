@@ -3,13 +3,14 @@ import torch
 from torch.utils.data import DataLoader
 from transformers import T5Tokenizer, MT5ForConditionalGeneration, AdamW
 
-from train_datasets import TedTalksDataset, PontoonTranslationsDataset, ScorisMergedDataset
+from train_datasets import TedTalksDataset, PontoonTranslationsDataset, ScorisMergedDataset, MergedDataset
 from train import train_model
 
 def main(args):
     torch.manual_seed(42)
 
     tokenizer = T5Tokenizer.from_pretrained(args.tokenizer)
+    tokenizer.add_tokens(["<EN2LT>", "<LT2EN>"])
     model = MT5ForConditionalGeneration.from_pretrained(args.model)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -25,7 +26,12 @@ def main(args):
                             max_length = 128,
                             )
     elif args.dataset =="ayymen/Pontoon-Translations":
-        dataset = TedTalksDataset("ayymen/Pontoon-Translations",
+        dataset = PontoonTranslationsDataset("ayymen/Pontoon-Translations",
+                            tokenizer = tokenizer,
+                            max_length = 128,
+                            )
+    elif args.dataset =="ALL":
+        dataset = MergedDataset("ALL",
                             tokenizer = tokenizer,
                             max_length = 128,
                             )
@@ -35,10 +41,16 @@ def main(args):
     loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True)
     optimizer = AdamW(model.parameters(), lr=args.learning_rate)
 
-    os.makedirs("./output", exist_ok=True)
+    output_dir = "./output"
+    os.makedirs(output_dir, exist_ok=True)
+    tokenizer_dir = output_dir+ "/tokeniser"
+    os.makedirs(tokenizer_dir, exist_ok=True)
 
-    save_model_path = "./output/mT5Translator_scoris_en_lt_updated.pth"
-    training_info_path = "./output/training_info_scoris_en_lt.json"
+    save_model_path = f"{output_dir}/mT5Translator_scoris_en_lt_updated.pth"
+    training_info_path = f"{output_dir}/training_info_scoris_en_lt.json"
+
+    tokenizer.save_pretrained(tokenizer_dir)
+    print("\nTokenizer saved.")
 
     train_model(
         model= model,

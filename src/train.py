@@ -11,13 +11,11 @@ def create_checkpoint(save_path: Path, # Model save patj
                       total_batches_processed: int, # total batches processed
                       model, # model
                       total_loss, # losses on batch
-                      
                       ):
   # Save the model state
   checkpoint_path = save_path
   torch.save(model.state_dict(), checkpoint_path)
   print("\nModel saved, batch: ", total_batches_processed)
-
   # Save batch info to JSON
   batch_info = {
     "batch_number": total_batches_processed,
