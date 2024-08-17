@@ -34,7 +34,6 @@ def train_model(model,
                 training_info_path: Path,
                 start_from_batch: int=350,
                 save_each_steps: int = 2000,
-                weight_decay: float = 0.01
                 ):
   total_batches_skipped = 0
   total_batches_processed = 0
@@ -56,11 +55,6 @@ def train_model(model,
 
           outputs = model(input_ids=input_ids, attention_mask=attention_mask, labels=labels)
           loss = outputs.loss
-
-          for param_group in optimizer.param_groups:
-            for param in param_group['params']:
-              if param.grad is not None:
-                param.grad = param.grad + weight_decay * param.data
 
           loss.backward()
           optimizer.step()

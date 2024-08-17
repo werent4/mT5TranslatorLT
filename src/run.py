@@ -39,7 +39,7 @@ def main(args):
         raise ValueError(f"Dataset: {args.dataset} not supported")
 
     loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True)
-    optimizer = AdamW(model.parameters(), lr=args.learning_rate)
+    optimizer = AdamW(model.parameters(), lr=args.learning_rate, weight_decay= args.weight_decay)
 
     output_dir = "./output"
     os.makedirs(output_dir, exist_ok=True)
@@ -61,7 +61,6 @@ def main(args):
         start_from_batch= args.start_from_batch,
         training_info_path= training_info_path,
         save_each_steps= args.save_each_steps,
-        weight_decay= args.weight_decay
     )
 
 if __name__ == "__main__":
