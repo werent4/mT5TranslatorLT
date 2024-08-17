@@ -60,7 +60,8 @@ def main(args):
         save_path= save_model_path,
         start_from_batch= args.start_from_batch,
         training_info_path= training_info_path,
-        save_each_steps= args.save_each_steps
+        save_each_steps= args.save_each_steps,
+        weight_decay= args.weight_decay
     )
 
 if __name__ == "__main__":
@@ -71,6 +72,7 @@ if __name__ == "__main__":
     parser.add_argument('--max_length', type=int, default=128, required= True, help='Maximum sequence length')
     parser.add_argument('--batch_size', type=int, default=14, required= True, help='Batch size')
     parser.add_argument('--learning_rate', type=float, default=1e-5, required= True, help='Learning rate')
+    parser.add_argument('--weight_decay', type=float, default=1e-5, required= True, help='Weight decay')
     parser.add_argument('--num_epochs', type=int, default=1, required= True, help='Number of epochs')
     parser.add_argument('--start_from_batch', type=int, default=0, required= True, help='Start training from the specified batch')
     parser.add_argument('--save_each_steps', type=int, default=15, required= True, help='Save the model every N steps')
